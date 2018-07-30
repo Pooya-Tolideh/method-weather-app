@@ -4,6 +4,10 @@ import ReactDOM from 'react-dom';
 
 
 
+
+
+
+
 const Header = (props) => {
     return (
         <header>
@@ -20,38 +24,76 @@ Header.defaultProps = {
 
 
 
+
 class SearchForm extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.onFormSubmit = this.onFormSubmit.bind(this);
+    }
+
+    onFormSubmit (e) {
+        e.persist();
+        console.log(e.target.elements.searchQ)   
+        this.props.getSearch(e.target.value);
+    }
+
+    render () {
+        return (<form onSubmit={onFormSubmit}>
+            <input type="text" id="search-city" placeholder="Search for a city" name="searchQ"/>
+        </form>
+        );
+    }
+
+}
+
+const Result = (props) => {
+    return (
+        <div>
+            <h3>City: {props.cityName}</h3>
+        </div>
+    ) ; 
+};
+
+
+class WeatherApp extends React.Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            query: "hello"
+            city: ""
+        }
+        this.handleSearchQuery = this.handleSearchQuery.bind(this);
+    }
+
+    getJSON () {
+        return fetch('api.openweathermap.org/data/2.5/weather?q=London')
+                .then(response => {
+                    if (response.status === 200) {
+                    return response.json( )
+                    } else { throw Error('url not found')}
+                })
+                .then (data => console.log(data))
+                .catch(err => console.error(err))
+    }
+
+    componentDidMount () {
+        this.getJSON();
+    }
+
+    handleSearchQuery(city) {
+        if (city) {
+            this.setState( prevState => {
+                return { city }
+            });
+            console.log(this.state);
         }
     }
 
-    handleKeyPress = (e) => {
-        e.persist();
-        this.setState(prevState => {
-            return {
-                query: e.target.value.toLowerCase()
-            }
-        })
-    }
-
-    render() {
-        return <form>
-            <input type="text" id="search-city" placeholder="Search for a city" onKeyUp={this.handleKeyPress}/>
-            <p>{this.state.query}</p>
-        </form>
-    }
-}
-
-class WeatherApp extends React.Component {
     render() {
         return (
             <div>
                 <Header/>
-                <SearchForm/>
+                <SearchForm getSearch={this.handleSearchQuery}/>
+                <Result cityName={this.state.city}/>
             </div>
         );
     }
