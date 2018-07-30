@@ -1,0 +1,8 @@
+{
+  "name": "method-weather-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Pooya-Tolideh/method-weather-app.git",
+  "author": "pooya-tolideh <pooya.tolideh@gmail.com>",
+  "license": "MIT"
+}
