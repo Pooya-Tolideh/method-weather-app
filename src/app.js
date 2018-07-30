@@ -19,10 +19,29 @@ Header.defaultProps = {
 };
 
 
+
 class SearchForm extends React.Component {
+    constructor (props) {
+        super(props);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.state = {
+            query: "hello"
+        }
+    }
+
+    handleKeyPress = (e) => {
+        e.persist();
+        this.setState(prevState => {
+            return {
+                query: e.target.value.toLowerCase()
+            }
+        })
+    }
+
     render() {
         return <form>
-            <input type="text" id="search-city"/>
+            <input type="text" id="search-city" placeholder="Search for a city" onKeyUp={this.handleKeyPress}/>
+            <p>{this.state.query}</p>
         </form>
     }
 }
